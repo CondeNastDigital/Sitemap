@@ -135,7 +135,7 @@ class SitemapExtension extends SimpleExtension
         $app = $this->getContainer();
         $config = $this->getConfig();
         $contentTypes = $app['config']->get('contenttypes');
-        $contentParams = ['limit' => 10000, 'order' => 'datepublish desc', 'hydrate' => false];
+        $contentParams = ['limit' => 10000, 'order' => 'datepublish desc', 'hydrate' => $config['hydrate'] ?? false];
 
         $homepageLink = [
             'link'  => $app['url_generator']->generate('homepage'),
