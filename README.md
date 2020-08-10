@@ -1,5 +1,10 @@
 Sitemap
 =======
+**FORK**
+This is a fork of `bolt/sitemap`. 
+Customizations include:
+- callbacks to inject custom link generation
+ ---
 
 This extension will automatically create XML sitemaps for your Bolt sites.
 After enabling the extension, go to `http://example.org/sitemap.xml` to see it.
