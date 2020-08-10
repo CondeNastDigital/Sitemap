@@ -1,5 +1,5 @@
 {
-    "name": "bolt/sitemap",
+    "name": "cnd/sitemap",
     "description": "An extension to create XML sitemaps for your Bolt website.",
     "type": "bolt-extension",
     "keywords": [
