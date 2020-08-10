@@ -23,12 +23,6 @@ ignore:
 ## ignore images (by default the sitemap contains links to images)
 ignore_images: false
 
-## callbacks for various functions
-# the 'record_link' callback injects a php callback function per contenttype
-callbacks:
-  record_link:
-    pages: mycallback
-
 ## when ignore_listing is not = true: listings templates may not exist yet may contain child pages.
 ## add path will keep listing visible in tree but remove its link.
 #remove_link:
