@@ -87,6 +87,7 @@ class SitemapExtension extends SimpleExtension
         return [
             'ignore'             => [],
             'ignore_contenttype' => [],
+            'ignore_taxonomtype' => [],
             'remove_link'        => [],
             'ignore_listing'     => false,
             'ignore_images'      => false,
@@ -135,6 +136,7 @@ class SitemapExtension extends SimpleExtension
         $app = $this->getContainer();
         $config = $this->getConfig();
         $contentTypes = $app['config']->get('contenttypes');
+        $taxonomyTypes = $app['config']->get('taxonomy', []);
         $contentParams = ['limit' => 10000, 'order' => 'datepublish desc', 'hydrate' => $config['hydrate'] ?? false];
 
         $homepageLink = [
@@ -183,6 +185,38 @@ class SitemapExtension extends SimpleExtension
             }
         }
 
+        foreach ($taxonomyTypes as $taxonomyType => $taxonomyConfig) {
+            $isIgnored = in_array($taxonomyConfig['slug'], $config['ignore_taxonomytype']);
+            $isIgnoredURL = in_array('/' . $taxonomyConfig['slug'], $config['remove_link']);
+
+            if (!$isIgnored) {
+                $baseDepth = 0;
+
+                $this->connection = $app['db'];
+                $result = $this
+                    ->connection
+                    ->createQueryBuilder()
+                    ->select(['t.slug','t.name', 'MAX(a.datechanged) AS datechanged'])
+                    ->from('bolt_taxonomy', 't')
+                    ->innerJoin('t', 'bolt_articles', 'a', 'a.id = t.content_id AND t.contenttype = \'articles\'') // FIXME: Currently hardcoded. Should be configurable
+                    ->groupBy('t.slug')
+                    ->where('t.taxonomytype = :taxonomyType AND a.status = :status and t.slug > \'\'')
+                    ->setParameters([':taxonomyType' => $taxonomyConfig['slug'], ':status' => 'published'])
+                    ->setMaxResults(10000)
+                    ->execute();
+
+                /** @var Content $entry */
+                while (false !== ($row = $result->fetch())) {
+                    $links->add([
+                        'link'    => $this->getTaxonomyLink($taxonomyConfig['slug'], $row['slug']),
+                        'title'   => $row['name'],
+                        'depth'   => $baseDepth + 1,
+                        'lastmod' => Carbon::createFromTimestamp(strtotime($row['datechanged']))->toW3cString(),
+                    ]);
+                }
+            }
+        }
+
         foreach ($links as $idx => $link) {
             if ($this->linkIsIgnored($link)) {
                 unset($links[$idx]);
@@ -210,6 +244,14 @@ class SitemapExtension extends SimpleExtension
         }
 
         return $urlGenerator->generate('contentlisting', $urlParameters);
+    }
+
+    private function getTaxonomyLink($taxonomyTypeSlug, $taxonomySlug)
+    {
+        $urlGenerator = $this->getContainer()['url_generator'];
+        $urlParameters = ['taxonomytype' => $taxonomyTypeSlug, 'slug' => $taxonomySlug];
+
+        return $urlGenerator->generate('taxonomylink', $urlParameters);
     }
 
     /**
