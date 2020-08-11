@@ -3,7 +3,8 @@ Sitemap
 **FORK**
 This is a fork of `bolt/sitemap`. 
 Customizations include:
-- callbacks to inject custom link generation
+- Taxonomy pages added
+- Option to enable hydration added
  ---
 
 This extension will automatically create XML sitemaps for your Bolt sites.
