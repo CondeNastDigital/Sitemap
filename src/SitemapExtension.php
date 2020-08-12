@@ -59,15 +59,22 @@ class SitemapExtension extends SimpleExtension
      */
     protected function registerAssets()
     {
+        $app = $this->getContainer();
+        $sitemap_link = $this->getConfig()['sitemap_link'] ?? true;
+
+        if($sitemap_link === false)
+            return[];
+        if($sitemap_link === true)
+            $sitemap_link = $app['url_generator']->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL).'sitemap.xml';
+
         $snippet = new Snippet();
         $snippet
             ->setLocation(Target::END_OF_HEAD)
             ->setZone(Zone::FRONTEND)
-            ->setCallback(function () {
-                $app = $this->getContainer();
+            ->setCallback(function () use ($sitemap_link) {
                 $snippet = sprintf(
                     '<link rel="sitemap" type="application/xml" title="Sitemap" href="%s">',
-                    $app['url_generator']->generate('sitemapXml', [], UrlGeneratorInterface::ABSOLUTE_URL)
+                    $sitemap_link
                 );
 
                 return $snippet;
@@ -92,6 +99,7 @@ class SitemapExtension extends SimpleExtension
             'ignore_listing'     => false,
             'ignore_images'      => false,
             'sitemap_name'       => 'sitemap',
+            'sitemap_link'       => true,
         ];
     }
 
