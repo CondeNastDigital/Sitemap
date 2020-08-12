@@ -5,6 +5,7 @@ This is a fork of `bolt/sitemap`.
 Customizations include:
 - Taxonomy pages added
 - Option to enable hydration added
+- Configurable name for sitemap route
  ---
 
 This extension will automatically create XML sitemaps for your Bolt sites.

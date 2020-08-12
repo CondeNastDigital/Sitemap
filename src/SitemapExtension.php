@@ -91,6 +91,7 @@ class SitemapExtension extends SimpleExtension
             'remove_link'        => [],
             'ignore_listing'     => false,
             'ignore_images'      => false,
+            'sitemap_name'       => 'sitemap',
         ];
     }
 

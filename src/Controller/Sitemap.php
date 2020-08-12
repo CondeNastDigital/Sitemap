@@ -23,15 +23,18 @@ class Sitemap implements ControllerProviderInterface
     {
         $this->app = $app;
 
+        $config = $app['sitemap.config'];
+        $name = $config['sitemap_name'] ?? 'sitemap';
+
         /** @var ControllerCollection $ctr */
         $ctr = $app['controllers_factory'];
 
         // This matches both GET requests.
-        $ctr->match('sitemap', [$this, 'sitemap'])
+        $ctr->match($name, [$this, 'sitemap'])
             ->bind('sitemap')
             ->method('GET');
 
-        $ctr->match('sitemap.xml', [$this, 'sitemapXml'])
+        $ctr->match($name.'.xml', [$this, 'sitemapXml'])
             ->bind('sitemapXml')
             ->method('GET');
 

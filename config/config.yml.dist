@@ -3,6 +3,9 @@
 template: sitemap.twig
 xml_template: sitemap_xml.twig
 
+# Name of this sitemap. Can be used to create a sub-sitemap loaded somewhere else
+sitemap_name: sitemap
+
 ignore:
   - /page/home
   - /page/error404
@@ -13,6 +16,11 @@ ignore:
 #ignore_contenttype:
 #  - pages
 
+# Ignore taxonomie slugs
+# ignore_taxonomytype:
+#  - tags
+
+
 ## listing routes (contenttype_slug: route_name)
 #listing_routes:
 #  pages: custom_pages_route
@@ -22,6 +30,9 @@ ignore:
 
 ## ignore images (by default the sitemap contains links to images)
 ignore_images: false
+
+# Do you need hydrated records? Thiscan have severe performance impacts!
+# hydrate: false
 
 ## when ignore_listing is not = true: listings templates may not exist yet may contain child pages.
 ## add path will keep listing visible in tree but remove its link.
