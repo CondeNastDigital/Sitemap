@@ -10,7 +10,10 @@ use Bolt\Extension\SimpleExtension;
 use Bolt\Legacy\Content;
 use Carbon\Carbon;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * Sitemap extension for Bolt.
@@ -62,10 +65,18 @@ class SitemapExtension extends SimpleExtension
         $app = $this->getContainer();
         $sitemap_link = $this->getConfig()['sitemap_link'] ?? true;
 
+        // The url generator is not working at this stage, so we need set context correctly -.-
+        // To not conflict with bolt internals, we do this in a disposable clone
+        // FIXME: If someone can fix this properly ... feel free
+        $context = new RequestContext();
+        $context->fromRequest(Request::createFromGlobals());
+        $urlgenerator = clone $app['url_generator'];
+        $urlgenerator->setContext($context);
+
         if($sitemap_link === false)
             return[];
         if($sitemap_link === true)
-            $sitemap_link = $app['url_generator']->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL).'sitemap.xml';
+            $sitemap_link = $urlgenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL).'sitemap.xml';
 
         $snippet = new Snippet();
         $snippet
