@@ -228,7 +228,7 @@ class SitemapExtension extends SimpleExtension
                 /** @var Content $entry */
                 while (false !== ($row = $result->fetch())) {
                     $links->add([
-                        'link'    => $this->getTaxonomyLink($taxonomyConfig['slug'], $row['slug']),
+                        'link'    => $this->getTaxonomyLink($taxonomyConfig['singular_slug'], $row['slug']),
                         'title'   => $row['name'],
                         'depth'   => $baseDepth + 1,
                         'lastmod' => Carbon::createFromTimestamp(strtotime($row['datechanged']))->toW3cString(),
