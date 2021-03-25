@@ -38,3 +38,7 @@ ignore_images: false
 ## add path will keep listing visible in tree but remove its link.
 #remove_link:
 #  - /pages
+
+## ignore enties with given flags (eg. noindex)
+#ignore_flags:
+#  noindex: 1

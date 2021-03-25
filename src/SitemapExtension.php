@@ -109,6 +109,7 @@ class SitemapExtension extends SimpleExtension
             'remove_link'        => [],
             'ignore_listing'     => false,
             'ignore_images'      => false,
+            'ignore_flags'       => false,
             'sitemap_name'       => 'sitemap',
             'sitemap_link'       => true,
         ];
@@ -194,6 +195,10 @@ class SitemapExtension extends SimpleExtension
                 $content = $app['storage']->getContent($contentType['slug'], $contentParams);
                 /** @var Content $entry */
                 foreach ($content as $entry) {
+
+                    if ($this->entryIgnored($entry))
+                        continue;
+
                     $links->add([
                         'link'    => $entry->link(),
                         'title'   => $entry->getTitle(),
@@ -301,6 +306,26 @@ class SitemapExtension extends SimpleExtension
         }
 
         // No absolute match & no regex match
+        return false;
+    }
+
+    /**
+     * Check to see if an object should be ignored from the sitemap.
+     *
+     * @param object $entry
+     *
+     * @return bool
+     */
+    private function entryIgnored($entry)
+    {
+        $config = $this->getConfig();
+        $values = $entry->values;
+
+        foreach ($config['ignore_flags'] as $key => $ignore) {
+            if (isset($values[$key]) && $values[$key] == $ignore)
+                return true;
+        }
+
         return false;
     }
 
