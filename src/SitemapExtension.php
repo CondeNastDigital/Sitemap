@@ -321,9 +321,11 @@ class SitemapExtension extends SimpleExtension
         $config = $this->getConfig();
         $values = $entry->values;
 
-        foreach ($config['ignore_flags'] as $key => $ignore) {
-            if (isset($values[$key]) && $values[$key] == $ignore)
-                return true;
+        if ($config['ignore_flags'] !== false) {
+            foreach ($config['ignore_flags'] as $key => $ignore) {
+                if (isset($values[$key]) && $values[$key] == $ignore)
+                    return true;
+            }
         }
 
         return false;
